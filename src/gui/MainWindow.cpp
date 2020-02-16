@@ -27,6 +27,11 @@
 #include <QTimer>
 #include <QWindow>
 
+#include <iostream>
+
+#define BOOST_STACKTRACE_USE_ADDR2LINE
+#include <boost/stacktrace.hpp>
+
 #include "config-keepassx.h"
 
 #include "autotype/AutoType.h"
@@ -1024,7 +1029,7 @@ void MainWindow::changeEvent(QEvent* event)
         if (isTrayIconEnabled() && m_trayIcon && m_trayIcon->isVisible()
             && config()->get("GUI/MinimizeToTray").toBool()) {
             event->ignore();
-            QTimer::singleShot(0, this, SLOT(hide()));
+            QTimer::singleShot(0, this, SLOT(timerHide()));
         }
 
         if (config()->get("security/lockdatabaseminimize").toBool()) {
@@ -1240,16 +1245,26 @@ void MainWindow::show()
 {
     m_lastShowTime = Clock::currentMiliSecondsSinceEpoch();
     QMainWindow::show();
+    std::cerr << "show" << std::endl;
 }
 
 bool MainWindow::shouldHide()
 {
     qint64 current_time = Clock::currentMiliSecondsSinceEpoch();
 
-    if (current_time - m_lastShowTime < 50)
+    if (current_time - m_lastShowTime < 50) {
+        std::cerr << "Hiding after " << current_time - m_lastShowTime << "ms" << std::endl
+                  << boost::stacktrace::stacktrace() << std::endl;
         return false;
+    }
 
     return true;
+}
+
+void MainWindow::timerHide()
+{
+    std::cerr << "timerHide" << std::endl;
+    hide();
 }
 
 void MainWindow::hide()
@@ -1270,6 +1285,7 @@ void MainWindow::hideWindow()
         setWindowState(windowState() | Qt::WindowMinimized);
     }
     // Only hide if tray icon is active, otherwise window will be gone forever
+    std::cerr << "hideWindow" << std::endl;
     if (isTrayIconEnabled()) {
         hide();
     } else {

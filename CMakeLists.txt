@@ -213,8 +213,6 @@ endif()
 add_gcc_compiler_flags("-fno-common")
 add_gcc_compiler_flags("-Wall -Wextra -Wundef -Wpointer-arith -Wno-long-long")
 add_gcc_compiler_flags("-Wformat=2 -Wmissing-format-attribute")
-add_gcc_compiler_flags("-fvisibility=hidden")
-add_gcc_compiler_cxxflags("-fvisibility-inlines-hidden")
 
 if(CMAKE_BUILD_TYPE_LOWER STREQUAL "debug")
     add_gcc_compiler_flags("-Werror")
@@ -228,7 +226,7 @@ else()
 endif()
 endif()
 
-add_gcc_compiler_cxxflags("-fno-exceptions -fno-rtti")
+add_gcc_compiler_cxxflags("-fexceptions -fno-rtti -rdynamic")
 add_gcc_compiler_cxxflags("-Wnon-virtual-dtor -Wold-style-cast -Woverloaded-virtual")
 add_gcc_compiler_cflags("-Wchar-subscripts -Wwrite-strings")
 
@@ -281,9 +279,9 @@ if(CMAKE_SYSTEM_NAME STREQUAL "Linux")
     endif()
     add_gcc_compiler_flags("-pie -fPIE")
     set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -Wl,--no-add-needed -Wl,--as-needed -Wl,--no-undefined")
-    set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -Wl,-z,relro,-z,now")
+    set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -Wl,-z,relro,-z,now -rdynamic")
     set(CMAKE_MODULE_LINKER_FLAGS "${CMAKE_MODULE_LINKER_FLAGS} -Wl,--no-add-needed -Wl,--as-needed")
-    set(CMAKE_MODULE_LINKER_FLAGS "${CMAKE_MODULE_LINKER_FLAGS} -Wl,-z,relro,-z,now")
+    set(CMAKE_MODULE_LINKER_FLAGS "${CMAKE_MODULE_LINKER_FLAGS} -Wl,-z,relro,-z,now -rdynamic")
 endif()
 
 add_gcc_compiler_cflags("-std=c99")
@@ -421,6 +419,7 @@ find_package(Argon2 REQUIRED)
 find_package(ZLIB REQUIRED)
 find_package(QREncode REQUIRED)
 find_package(sodium 1.0.12 REQUIRED)
+find_package(Boost 1.4 REQUIRED)
 
 set(CMAKE_REQUIRED_INCLUDES ${ZLIB_INCLUDE_DIR})
 
@@ -428,7 +427,7 @@ if(ZLIB_VERSION_STRING VERSION_LESS "1.2.0")
     message(FATAL_ERROR "zlib 1.2.0 or higher is required to use the gzip format")
 endif()
 
-include_directories(SYSTEM ${ARGON2_INCLUDE_DIR} ${sodium_INCLUDE_DIR})
+include_directories(SYSTEM ${ARGON2_INCLUDE_DIR} ${sodium_INCLUDE_DIR} ${Boost_INCLUDE_DIR})
 
 # Optional
 if(WITH_XC_YUBIKEY)

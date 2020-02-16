@@ -70,6 +70,7 @@ public slots:
     void hideGlobalMessage();
     void showYubiKeyPopup();
     void hideYubiKeyPopup();
+    void timerHide();
 #ifndef _WIN32
     void hide();
     void show();

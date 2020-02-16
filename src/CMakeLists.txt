@@ -23,6 +23,8 @@ if(NOT ZXCVBN_LIBRARIES)
     set(ZXCVBN_LIBRARIES zxcvbn)
 endif(NOT ZXCVBN_LIBRARIES)
 
+find_library(LIBDL dl)
+
 set(keepassx_SOURCES
         core/Alloc.cpp
         core/AutoTypeAssociations.cpp
@@ -307,6 +309,7 @@ target_link_libraries(keepassx_core
         ${ARGON2_LIBRARIES}
         ${GCRYPT_LIBRARIES}
         ${GPGERROR_LIBRARIES}
+        ${LIBDL}
         ${ZLIB_LIBRARIES})
 
 if(WITH_XC_SSHAGENT)

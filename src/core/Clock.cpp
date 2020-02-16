@@ -34,6 +34,11 @@ uint Clock::currentSecondsSinceEpoch()
     return instance().currentDateTimeImpl().toTime_t();
 }
 
+qint64 Clock::currentMiliSecondsSinceEpoch()
+{
+    return instance().currentDateTimeImpl().toMSecsSinceEpoch();
+}
+
 QDateTime Clock::serialized(const QDateTime& dateTime)
 {
     auto time = dateTime.time();

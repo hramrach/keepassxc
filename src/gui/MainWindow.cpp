@@ -1235,6 +1235,28 @@ void MainWindow::processTrayIconTrigger()
     }
 }
 
+void MainWindow::show()
+{
+    m_lastShowTime = Clock::currentMiliSecondsSinceEpoch();
+    QMainWindow::show();
+}
+
+bool MainWindow::shouldHide()
+{
+    qint64 current_time = Clock::currentMiliSecondsSinceEpoch();
+
+    if (current_time - m_lastShowTime < 50)
+        return false;
+
+    return true;
+}
+
+void MainWindow::hide()
+{
+    if (shouldHide())
+        QMainWindow::hide();
+}
+
 void MainWindow::hideWindow()
 {
     saveWindowInformation();

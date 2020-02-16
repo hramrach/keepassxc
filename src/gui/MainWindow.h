@@ -70,6 +70,8 @@ public slots:
     void hideGlobalMessage();
     void showYubiKeyPopup();
     void hideYubiKeyPopup();
+    void hide();
+    void show();
     void hideWindow();
     void toggleWindow();
     void bringToFront();
@@ -132,6 +134,7 @@ private:
 
     static const QString BaseWindowTitle;
 
+    bool shouldHide();
     void saveWindowInformation();
     bool saveLastDatabases();
     void updateTrayIcon();
@@ -163,6 +166,7 @@ private:
     bool m_appExiting = false;
     bool m_contextMenuFocusLock = false;
     uint m_lastFocusOutTime = 0;
+    qint64 m_lastShowTime = 0;
     QTimer m_trayIconTriggerTimer;
     QSystemTrayIcon::ActivationReason m_trayIconTriggerReason;
 };

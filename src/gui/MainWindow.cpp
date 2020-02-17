@@ -1235,6 +1235,7 @@ void MainWindow::processTrayIconTrigger()
     }
 }
 
+#ifndef _WIN32
 void MainWindow::show()
 {
     m_lastShowTime = Clock::currentMiliSecondsSinceEpoch();
@@ -1256,6 +1257,7 @@ void MainWindow::hide()
     if (shouldHide())
         QMainWindow::hide();
 }
+#endif
 
 void MainWindow::hideWindow()
 {

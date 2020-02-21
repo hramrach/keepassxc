@@ -20,6 +20,8 @@
 #include <QFile>
 #include <QTextStream>
 
+#include <iostream>
+
 #include "cli/Utils.h"
 #include "config-keepassx.h"
 #include "core/Bootstrap.h"
@@ -44,9 +46,19 @@ Q_IMPORT_PLUGIN(QXcbIntegrationPlugin)
 #endif
 #endif
 
+std::ostream& operator<<(std::ostream& str, const QString& string) {
+    return str << string.toUtf8().constData();
+}
+
 int main(int argc, char** argv)
 {
     QT_REQUIRE_VERSION(argc, argv, QT_VERSION_STR)
+
+    if (QGuiApplication::platformName() == "xcb") {
+        std::cerr << "X11 system detected" << std::endl;
+    }
+
+    std::cerr << "Platform : \"" << QGuiApplication::platformName() << "\"" << std::endl;
 
 #if QT_VERSION >= QT_VERSION_CHECK(5, 6, 0)
     QApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
@@ -65,6 +77,12 @@ int main(int argc, char** argv)
     // don't set organizationName as that changes the return value of
     // QStandardPaths::writableLocation(QDesktopServices::DataLocation)
     Bootstrap::bootstrapApplication();
+
+    if (QGuiApplication::platformName() == "xcb") {
+        std::cerr << "X11 system detected" << std::endl;
+    }
+
+    std::cerr << "Platform : \"" << QGuiApplication::platformName() << "\"" << std::endl;
 
     QCommandLineParser parser;
     parser.setApplicationDescription(QObject::tr("KeePassXC - cross-platform password manager"));

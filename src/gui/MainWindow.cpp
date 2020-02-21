@@ -1238,13 +1238,13 @@ void MainWindow::processTrayIconTrigger()
 void MainWindow::hideWindow()
 {
     saveWindowInformation();
-#if !defined(Q_OS_LINUX) && !defined(Q_OS_MACOS)
-    // On some Linux systems, the window should NOT be minimized and hidden (i.e. not shown), at
-    // the same time (which would happen if both minimize on startup and minimize to tray are set)
-    // since otherwise it causes problems on restore as seen on issue #1595. Hiding it is enough.
-    // TODO: Add an explanation for why this is also not done on Mac (or remove the check)
-    setWindowState(windowState() | Qt::WindowMinimized);
-#endif
+    if (QGuiApplication::platformName() == "xcb") {
+        // In X11 the window should NOT be minimized and hidden (i.e. not
+        // shown) at the same time (which would happen if both minimize on
+        // startup and minimize to tray are set) since otherwise it causes
+        // problems on restore as seen on issue #1595. Hiding it is enough.
+        setWindowState(windowState() | Qt::WindowMinimized);
+    }
     // Only hide if tray icon is active, otherwise window will be gone forever
     if (isTrayIconEnabled()) {
         hide();
